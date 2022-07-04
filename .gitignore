@@ -5,3 +5,5 @@
 /output-virtualbox-iso
 /packer_cache
 /vendor
+configuration.nix
+output*

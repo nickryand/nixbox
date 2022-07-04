@@ -4,7 +4,6 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./hardware-builder.nix
       ./vagrant.nix
       ./custom-configuration.nix
     ];
@@ -73,4 +72,5 @@
       %wheel ALL=(ALL) NOPASSWD: ALL, SETENV: ALL
     '';
 
+  system.stateVersion = "${version}";
 }
