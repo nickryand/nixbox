@@ -1,6 +1,16 @@
 locals {
-    iso_url = "https://channels.nixos.org/nixos-${var.version}/latest-nixos-minimal-${var.arch}-linux.iso"
-    iso_checksum = var.iso_checksums[var.version][var.arch]
+    iso_url = var.iso_urls[var.version][var.arch]
+    iso_checksum = "file:${local.iso_url}.sha256"
+}
+
+variable "iso_urls" {
+  description = "A map of objects that contain download URLs for isos"
+  type = map(
+    object({
+      i686 = string
+      x86_64 = string
+    })
+  )
 }
 
 variable "version" {
@@ -12,16 +22,6 @@ variable "arch" {
   description = "The system architecture of NixOS to build (Default: x86_64)"
   type = string
   default = "x86_64"
-}
-
-variable "iso_checksums" {
-  description = "An map of objects that define ISO checksums"
-  type = map(
-    object({
-      x86_64 = string
-      i686 = string
-    })
-  )
 }
 
 variable "disk_size" {
@@ -57,7 +57,7 @@ source "hyperv-iso" "hyperv" {
   generation           = 1
   headless             = true
   http_directory       = "scripts"
-  iso_checksum         = var.iso_checksum
+  iso_checksum         = local.iso_checksum
   iso_url              = var.iso_url
   memory               = var.memory
   shutdown_command     = "sudo shutdown -h now"
