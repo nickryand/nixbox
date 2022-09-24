@@ -58,7 +58,7 @@ source "hyperv-iso" "hyperv" {
   headless             = true
   http_directory       = "scripts"
   iso_checksum         = local.iso_checksum
-  iso_url              = var.iso_url
+  iso_url              = local.iso_url
   memory               = var.memory
   shutdown_command     = "sudo shutdown -h now"
   ssh_port             = 22
@@ -81,8 +81,8 @@ source "qemu" "qemu" {
   format               = "qcow2"
   headless             = true
   http_directory       = "scripts"
-  iso_checksum         = local.iso_checksum
   iso_url              = local.iso_url
+  iso_checksum         = local.iso_checksum
   qemuargs             = [["-m", var.memory]]
   shutdown_command     = "sudo shutdown -h now"
   ssh_port             = 22
@@ -151,13 +151,8 @@ build {
     destination = "/tmp/"
   }
 
-  /* provisioner "file" { */
-  /*   source = "./configs/" */
-  /*   destination = "/tmp/" */
-  /* } */
-
   provisioner "file" {
-    content = templatefile("./templates/configuration.tmpl", {version = var.version})
+    content = templatefile("./templates/configuration.tmpl", {version = var.version, type = source.type })
     destination = "/tmp/configuration.nix"
   }
 

@@ -6,12 +6,19 @@
       ./hardware-configuration.nix
       ./vagrant.nix
       ./custom-configuration.nix
+      %{ if type == "qemu" ~}
+      ./qemu.nix
+      %{ endif ~}
     ];
 
   # Use the GRUB 2 boot loader.
   boot.loader.grub.enable = true;
   boot.loader.grub.version = 2;
   boot.loader.grub.device = "/dev/sda";
+
+  # Resize root to allow for custom virtual disk sizes
+  boot.growPartition = true;
+  fileSystems."/".autoResize = true;
 
   # remove the fsck that runs at startup. It will always fail to run, stopping
   # your boot until you press *.
@@ -37,6 +44,7 @@
     nettools
     netcat
     nfs-utils
+    libnfs
     rsync
   ];
 
